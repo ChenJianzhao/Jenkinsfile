@@ -1,0 +1,59 @@
+#!groovy
+import groovy.json.JsonSlurperClassic
+
+properties([
+    parameters([
+            string(defaultValue: "product-service", description: "", name: 'app_name', trim: true),
+            string(defaultValue: 'build-stage', description: "", name: 'stage', trim: true),
+            string(defaultValue: 'develop', description: "", name: 'branch_name', trim: true),
+            string(defaultValue: 'master', description: "", name: 'build_machine', trim: true),
+            string(defaultValue: '', description: "", name: 'variable', trim: true)
+
+    ])
+])
+
+
+library "shared-lib@develop"
+
+base_workspace="/Users/cjz/Documents/develop"
+pipeline {
+
+    agent {
+        node {
+            label "${build_machine}"
+            customWorkspace "${base_workspace}/${app_name}/${branch_name}/${stage}"
+
+        }
+    }
+
+    environment {
+                env = envPlugin()
+            }
+
+
+
+        options {
+            timestamps()
+            // 跳过默认的 checkout scm，以便下方在 checkout 前 clean up workspace，避免前一次构建遗留的文件影响构建结果
+            skipDefaultCheckout()
+        }
+
+        // 使用到的工具，需要现在全局配置中设置，可以选取已安装的，也可以配置自动安装
+        tools {
+            maven 'maven_ci'
+        }
+
+
+        stages {
+            // 构建
+            stage('Build Project') {
+                steps {
+                    print env
+                    sh 'sleep 5'
+                }
+
+            }
+    }
+}
+
+

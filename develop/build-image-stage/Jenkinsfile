@@ -1,0 +1,46 @@
+#!groovy
+import groovy.json.JsonSlurperClassic
+
+properties([
+    parameters([
+            string(defaultValue: "product-service", description: "", name: 'app_name', trim: true),
+            string(defaultValue: 'build-stage', description: "", name: 'stage', trim: true),
+            string(defaultValue: 'develop', description: "", name: 'branch_name', trim: true),
+            string(defaultValue: 'master', description: "", name: 'build_machine', trim: true),
+            string(defaultValue: '', description: "", name: 'variable', trim: true)
+
+    ])
+])
+
+
+library "shared-lib@develop"
+
+base_workspace="/Users/cjz/Documents/develop"
+pipeline {
+
+    agent {
+        node {
+            label "${build_machine}"
+            customWorkspace "${base_workspace}/${app_name}/${branch_name}/${stage}"
+
+        }
+    }
+
+    environment {
+                env = envPlugin()
+            }
+
+
+        stages {
+            // 构建
+            stage('Build docker image') {
+                steps {
+                    print env
+                    sh 'sleep 5'
+                }
+
+            }
+    }
+}
+
+
