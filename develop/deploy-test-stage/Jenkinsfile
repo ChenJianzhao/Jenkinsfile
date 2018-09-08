@@ -15,7 +15,7 @@ properties([
 
 library "shared-lib@develop"
 
-base_workspace="/Users/cjz/Documents/develop"
+base_workspace="workspace"
 pipeline {
 
     agent {
