@@ -49,7 +49,7 @@ pipeline {
             stage('Build Project') {
                 steps {
                     print env
-                    sh 'sleep 5'
+                    sh 'sleep 30'
                 }
 
             }
